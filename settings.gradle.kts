@@ -21,4 +21,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "jedyapps-homework"
 include(":app")
- 
+include(":data")
+include(":domain")
+include(":presentation")
