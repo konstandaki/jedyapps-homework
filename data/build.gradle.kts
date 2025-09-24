@@ -43,4 +43,7 @@ dependencies {
     implementation(libs.okhttp.logging)
     implementation(libs.serialization.json)
     implementation(libs.retrofit.kotlinx.serialization)
+
+    // Paging
+    implementation(libs.paging.runtime)
 }

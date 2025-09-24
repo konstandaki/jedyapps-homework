@@ -42,8 +42,9 @@ android {
 }
 
 dependencies {
-    implementation(project(":presentation"))
     implementation(project(":data"))
+    implementation(project(":domain"))
+    implementation(project(":presentation"))
 
     // Compose
     implementation(platform(libs.compose.bom))

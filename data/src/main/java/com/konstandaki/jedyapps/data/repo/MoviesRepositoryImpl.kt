@@ -1,24 +1,28 @@
 package com.konstandaki.jedyapps.data.repo
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.konstandaki.jedyapps.data.api.OmdbApi
-import com.konstandaki.jedyapps.data.dto.toDomain
-import com.konstandaki.jedyapps.domain.entity.MoviesPage
+import com.konstandaki.jedyapps.data.paging.OMDB_PAGE_SIZE
+import com.konstandaki.jedyapps.data.paging.OmdbSearchPagingSource
+import com.konstandaki.jedyapps.domain.entity.Movie
 import com.konstandaki.jedyapps.domain.repo.MoviesRepository
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class MoviesRepositoryImpl @Inject constructor(
     private val api: OmdbApi
 ) : MoviesRepository {
 
-    override suspend fun search(query: String, page: Int): MoviesPage {
-        val dto = api.search(s = query, page = page)
-
-        if (dto.response != "True") {
-            throw IllegalStateException(dto.error ?: "OMDb error")
-        }
-
-        val items = dto.search.orEmpty().map { it.toDomain() }
-        val total = dto.totalResults?.toIntOrNull() ?: items.size
-        return MoviesPage(items = items, total = total, page = page)
+    override fun search(query: String): Flow<PagingData<Movie>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = OMDB_PAGE_SIZE,
+                prefetchDistance = 2,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = { OmdbSearchPagingSource(api, query) }
+        ).flow
     }
 }

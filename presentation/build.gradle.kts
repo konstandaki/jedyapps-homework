@@ -2,6 +2,8 @@ plugins {
     id("com.android.library")
     kotlin("android")
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.hilt.android)
 }
 
 android {
@@ -22,9 +24,12 @@ android {
 dependencies {
     implementation(project(":domain"))
 
-    implementation(project(":domain"))
+    implementation(libs.lifecycle.runtime.ktx)
+    implementation(libs.lifecycle.runtime.compose)
     implementation(platform(libs.compose.bom))
     implementation(libs.bundles.compose)
-    implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.hilt.navigation.compose)
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+    implementation(libs.paging.compose)
 }

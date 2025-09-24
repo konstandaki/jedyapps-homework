@@ -1,9 +1,9 @@
-package com.konstandaki.jedyapps.domain.repo
+package com.konstandaki.jedyapps.domain.interactor
 
 import androidx.paging.PagingData
 import com.konstandaki.jedyapps.domain.entity.Movie
 import kotlinx.coroutines.flow.Flow
 
-interface MoviesRepository {
+interface MoviesSearchInteractor {
     fun search(query: String): Flow<PagingData<Movie>>
 }
