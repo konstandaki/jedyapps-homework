@@ -46,4 +46,7 @@ dependencies {
 
     // Paging
     implementation(libs.paging.runtime)
+
+    // DataStore
+    implementation(libs.datastore.preferences)
 }

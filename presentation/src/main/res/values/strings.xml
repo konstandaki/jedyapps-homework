@@ -9,4 +9,12 @@
     <string name="label_retry">Retry</string>
     <string name="label_retry_with_message">Retry: %1$s</string>
     <string name="msg_oops_with_message">Oops: %1$s</string>
+
+    <string name="details_title">Details</string>
+    <string name="details_year_type">%1$s • %2$s</string>
+    <string name="details_genre">Genre: %1$s</string>
+    <string name="details_rating">IMDb: %1$s</string>
+    <string name="details_plot">Plot</string>
+    <string name="fav_add">Add to favorites</string>
+    <string name="fav_remove">Remove from favorites</string>
 </resources>

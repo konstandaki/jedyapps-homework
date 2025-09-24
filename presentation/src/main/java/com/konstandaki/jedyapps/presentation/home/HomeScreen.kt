@@ -21,16 +21,25 @@ import com.konstandaki.jedyapps.presentation.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    onOpenDetails: (String) -> Unit,
+    onOpenDetails: (Movie) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val viewState by viewModel.viewState.collectAsStateWithLifecycle()
     val pagingItems = viewModel.movies.collectAsLazyPagingItems()
 
-    Scaffold(topBar = {
-        TopAppBar(title = {
-            Text(stringResource(R.string.title_omdb_search))
-        }) }) { padding ->
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(R.string.title_omdb_search)) },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+                )
+            )
+        }
+    ) { padding ->
         Column(
             Modifier
                 .padding(padding)
@@ -46,7 +55,8 @@ fun HomeScreen(
 
             MoviesList(
                 movies = pagingItems,
-                canSearch = viewState.canSearch
+                canSearch = viewState.canSearch,
+                onOpenDetails = onOpenDetails
             )
         }
     }
@@ -65,7 +75,9 @@ private fun SearchField(
         singleLine = true,
         trailingIcon = {
             if (value.isNotBlank()) {
-                TextButton(onClick = onClear) { Text(stringResource(R.string.action_clear)) }
+                TextButton(onClick = onClear) {
+                    Text(stringResource(R.string.action_clear))
+                }
             }
         },
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
@@ -76,7 +88,8 @@ private fun SearchField(
 @Composable
 private fun MoviesList(
     movies: LazyPagingItems<Movie>,
-    canSearch: Boolean
+    canSearch: Boolean,
+    onOpenDetails: (Movie) -> Unit
 ) {
     if (!canSearch) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -115,7 +128,9 @@ private fun MoviesList(
             count = movies.itemCount,
             key = { idx -> idx }
         ) { idx ->
-            movies[idx]?.let { MovieRow(it) }
+            movies[idx]?.let { movie ->
+                MovieRow(movie, onClick = { onOpenDetails(movie) })
+            }
         }
         item {
             when (val a = loadState.append) {
@@ -147,12 +162,15 @@ private fun MoviesList(
 }
 
 @Composable
-private fun MovieRow(m: Movie) {
-    ElevatedCard(Modifier.fillMaxWidth()) {
+private fun MovieRow(movie: Movie, onClick: () -> Unit) {
+    ElevatedCard(
+        onClick = onClick,
+        Modifier.fillMaxWidth()
+    ) {
         Column(Modifier.padding(12.dp)) {
-            Text(m.title, style = MaterialTheme.typography.titleMedium)
+            Text(movie.title, style = MaterialTheme.typography.titleMedium)
             Spacer(Modifier.height(4.dp))
-            Text("${m.year} • ${m.type}", style = MaterialTheme.typography.bodyMedium)
+            Text("${movie.year} • ${movie.type}", style = MaterialTheme.typography.bodyMedium)
         }
     }
 }

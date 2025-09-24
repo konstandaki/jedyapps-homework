@@ -6,33 +6,28 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.konstandaki.jedyapps.presentation.details.DetailsScreen
 import com.konstandaki.jedyapps.presentation.home.HomeScreen
-
-object Routes {
-    const val HOME = "home"
-    const val DETAILS = "details/{id}"
-    fun details(id: String) = "details/$id"
-}
+import com.konstandaki.jedyapps.presentation.details.DetailsScreen
 
 @Composable
-fun JahNavHost() {
-    val nav = rememberNavController()
+fun JahNavHost(nav: androidx.navigation.NavHostController = rememberNavController()) {
     NavHost(navController = nav, startDestination = Routes.HOME) {
         composable(Routes.HOME) {
             HomeScreen(
-                onOpenDetails = { id -> nav.navigate(Routes.details(id)) }
+                onOpenDetails = { movie -> nav.navigate(Routes.detailsOf(movie)) }
             )
         }
         composable(
             route = Routes.DETAILS,
-            arguments = listOf(navArgument("id") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val id = backStackEntry.arguments?.getString("id").orEmpty()
-            DetailsScreen(
-                id = id,
-                onBack = { nav.popBackStack() }
+            arguments = listOf(
+                navArgument("id") { type = NavType.StringType },
+                navArgument("title") { type = NavType.StringType },
+                navArgument("year") { type = NavType.StringType },
+                navArgument("type") { type = NavType.StringType },
+                navArgument("poster") { type = NavType.StringType; defaultValue = "" }
             )
+        ) {
+            DetailsScreen(onBack = { nav.popBackStack() })
         }
     }
 }

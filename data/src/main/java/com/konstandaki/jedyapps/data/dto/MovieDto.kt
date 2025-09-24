@@ -21,5 +21,5 @@ fun MovieDto.toDomain(): Movie = Movie(
     title = title,
     year = year,
     type = type,
-    poster = poster?.takeUnless { it == "N/A" }
+    poster = poster ?: ""
 )

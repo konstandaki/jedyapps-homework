@@ -28,8 +28,10 @@ dependencies {
     implementation(libs.lifecycle.runtime.compose)
     implementation(platform(libs.compose.bom))
     implementation(libs.bundles.compose)
-    implementation(libs.hilt.navigation.compose)
-    implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
+    implementation(libs.hilt.android)
+    implementation(libs.hilt.navigation.compose)
     implementation(libs.paging.compose)
+    implementation(libs.coil.compose)
+    implementation(libs.compose.material.icons.extended)
 }

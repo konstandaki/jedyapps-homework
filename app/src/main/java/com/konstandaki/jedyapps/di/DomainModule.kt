@@ -1,5 +1,7 @@
 package com.konstandaki.jedyapps.di
 
+import com.konstandaki.jedyapps.domain.interactor.FavoritesInteractor
+import com.konstandaki.jedyapps.domain.interactor.FavoritesInteractorImpl
 import com.konstandaki.jedyapps.domain.interactor.MoviesSearchInteractor
 import com.konstandaki.jedyapps.domain.interactor.MoviesSearchInteractorImpl
 import dagger.Binds
@@ -14,4 +16,8 @@ abstract class DomainModule {
     @Binds
     @Singleton
     abstract fun bindMovieSearchInteractor(impl: MoviesSearchInteractorImpl): MoviesSearchInteractor
+
+    @Binds
+    @Singleton
+    abstract fun bindFavoritesInteractor(impl: FavoritesInteractorImpl): FavoritesInteractor
 }
