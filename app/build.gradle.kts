@@ -45,6 +45,7 @@ dependencies {
     implementation(project(":data"))
     implementation(project(":domain"))
     implementation(project(":presentation"))
+    implementation(project(":sdk"))
 
     // Compose
     implementation(platform(libs.compose.bom))

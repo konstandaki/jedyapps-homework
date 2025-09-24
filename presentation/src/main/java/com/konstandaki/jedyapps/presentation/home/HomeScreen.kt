@@ -17,6 +17,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.konstandaki.jedyapps.domain.entity.Movie
 import com.konstandaki.jedyapps.presentation.R
+import com.konstandaki.jedyapps.sdk.ads.AdsSdk
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -120,16 +121,38 @@ private fun MoviesList(
         }
     }
 
+    val shouldShowAds = movies.itemCount >= 3
+    val adPositions = if (shouldShowAds) listOf(1, 3) else emptyList()
+    val totalCount = movies.itemCount + adPositions.size
+
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier.fillMaxSize()
     ) {
         items(
-            count = movies.itemCount,
-            key = { idx -> idx }
+            count = totalCount,
+            key = { idx ->
+                if (idx in adPositions) "ad-$idx"
+                else {
+                    val baseIdx = idx - adPositions.count { it < idx }
+                    movies.peek(baseIdx)?.id ?: "p-$baseIdx"
+                }
+            }
         ) { idx ->
-            movies[idx]?.let { movie ->
-                MovieRow(movie, onClick = { onOpenDetails(movie) })
+            if (idx in adPositions) {
+                AdsSdk.native().Render(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 90.dp)
+                )
+            } else {
+                val baseIdx = idx - adPositions.count { it < idx }
+                movies[baseIdx]?.let { movie ->
+                    MovieRow(
+                         movie = movie,
+                        onClick = { onOpenDetails(movie) }
+                    )
+                }
             }
         }
         item {

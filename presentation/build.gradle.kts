@@ -23,6 +23,7 @@ android {
 
 dependencies {
     implementation(project(":domain"))
+    implementation(project(":sdk"))
 
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.lifecycle.runtime.compose)
