@@ -14,7 +14,7 @@ class JahApplication : Application() {
             config = AdsSdk.Config(
                 interstitialUnitId = getString(R.string.admob_interstitial_unit),
                 nativeUnitId = getString(R.string.admob_native_unit),
-                testDeviceIds = emptyList()
+                testDeviceIds =  emptyList()
             )
         )
     }

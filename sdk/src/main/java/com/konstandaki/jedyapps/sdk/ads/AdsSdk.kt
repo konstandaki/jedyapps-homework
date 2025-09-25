@@ -35,7 +35,10 @@ object AdsSdk {
 
         MobileAds.initialize(app)
 
-        val testIds = mutableListOf(AdRequest.DEVICE_ID_EMULATOR).apply {
+        val testIds = mutableListOf(
+            AdRequest.DEVICE_ID_EMULATOR,
+            "DBB04135507CF71234E012674886BA96"
+        ).apply {
             addAll(config.testDeviceIds)
         }
         if (testIds.isNotEmpty()) {

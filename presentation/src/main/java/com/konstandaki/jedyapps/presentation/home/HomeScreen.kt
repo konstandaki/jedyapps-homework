@@ -2,11 +2,14 @@ package com.konstandaki.jedyapps.presentation.home
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -69,6 +72,9 @@ private fun SearchField(
     onValueChange: (String) -> Unit,
     onClear: () -> Unit
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
+
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
@@ -82,6 +88,12 @@ private fun SearchField(
             }
         },
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
+        keyboardActions = KeyboardActions(
+            onSearch = {
+                keyboardController?.hide()
+                focusManager.clearFocus(force = true)
+            }
+        ),
         modifier = Modifier.fillMaxWidth()
     )
 }
@@ -121,8 +133,8 @@ private fun MoviesList(
         }
     }
 
-    val shouldShowAds = movies.itemCount >= 3
-    val adPositions = if (shouldShowAds) listOf(1, 3) else emptyList()
+    val has3 = movies.itemCount >= 3
+    val adPositions = remember(has3) { if (has3) listOf(1, 3) else emptyList() }
     val totalCount = movies.itemCount + adPositions.size
 
     LazyColumn(
@@ -131,25 +143,27 @@ private fun MoviesList(
     ) {
         items(
             count = totalCount,
-            key = { idx ->
-                if (idx in adPositions) "ad-$idx"
-                else {
-                    val baseIdx = idx - adPositions.count { it < idx }
-                    movies.peek(baseIdx)?.id ?: "p-$baseIdx"
+            key = { uiIndex ->
+                if (uiIndex in adPositions) {
+                    "ad-$uiIndex"
+                } else {
+                    val baseIdx = uiIndex - adPositions.count { it < uiIndex }
+                    val id = movies.peek(baseIdx)?.id ?: "placeholder"
+                    "m-$id-$baseIdx"
                 }
             }
-        ) { idx ->
-            if (idx in adPositions) {
+        ) { uiIndex ->
+            if (uiIndex in adPositions) {
                 AdsSdk.native().Render(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .heightIn(min = 90.dp)
+                        .heightIn(min = 120.dp)
                 )
             } else {
-                val baseIdx = idx - adPositions.count { it < idx }
+                val baseIdx = uiIndex - adPositions.count { it < uiIndex }
                 movies[baseIdx]?.let { movie ->
                     MovieRow(
-                         movie = movie,
+                        movie = movie,
                         onClick = { onOpenDetails(movie) }
                     )
                 }
